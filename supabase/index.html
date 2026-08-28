@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Employee Management Information System |
+        ACMHO (FW), Dibrugarh
+    </title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- ================= LOGIN PAGE ================= -->
+
+<div id="loginView" class="auth-shell">
+
+    <div class="auth-card">
+
+        <div class="brand-mark">
+            ACMHO
+        </div>
+
+        <h1>
+            Employee Management Information System
+        </h1>
+
+        <p>
+            Office of the Additional Chief Medical & Health Officer
+            (Family Welfare), Dibrugarh, Assam
+        </p>
+
+        <form id="loginForm">
+
+            <label>
+                Email / Login ID
+
+                <input
+                    id="loginEmail"
+                    type="email"
+                    required
+                    autocomplete="username"
+                >
+            </label>
+
+            <label>
+                Password
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    required
+                    autocomplete="current-password"
+                >
+            </label>
+
+            <button
+                class="primary"
+                type="submit"
+            >
+                🔐 Sign In
+            </button>
+
+            <div id="loginError" class="error"></div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN APPLICATION ================= -->
+
+<div id="appView" class="hidden">
+
+    <!-- HEADER -->
+
+    <header class="topbar">
+
+        <div>
+
+            <div class="eyebrow">
+                OFFICE OF THE ADDITIONAL CHIEF MEDICAL &
+                HEALTH OFFICER (FW)
+            </div>
+
+            <h1>
+                Employee Management Information System
+            </h1>
+
+            <div class="sub">
+                Dibrugarh, Assam
+            </div>
+
+        </div>
+
+        <div class="top-actions">
+
+            <span id="userBadge" class="badge"></span>
+
+            <button
+                id="changePasswordBtn"
+                class="secondary"
+            >
+                Change Password
+            </button>
+
+            <button
+                id="logoutBtn"
+                class="danger"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="tabs">
+
+        <button
+            class="tab active"
+            data-tab="dashboard"
+        >
+            Dashboard
+        </button>
+
+        <button
+            class="tab"
+            data-tab="employees"
+        >
+            Employees
+        </button>
+
+        <button
+            class="tab"
+            data-tab="reports"
+        >
+            Reports / Export
+        </button>
+
+        <button
+            class="tab admin-only"
+            data-tab="users"
+        >
+            User Management
+        </button>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main class="container">
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section
+            id="dashboard"
+            class="tab-panel active"
+        >
+
+            <div class="cards">
+
+                <div class="stat">
+                    <span>Total Employees</span>
+                    <strong id="statTotal">0</strong>
+                </div>
+
+                <div class="stat">
+                    <span>Regular</span>
+                    <strong id="statRegular">0</strong>
+                </div>
+
+                <div class="stat">
+                    <span>Contractual</span>
+                    <strong id="statContractual">0</strong>
+                </div>
+
+                <div class="stat">
+                    <span>Retiring ≤ 1 Year</span>
+                    <strong id="statRetire">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="grid-2">
+
+                <div class="panel">
+
+                    <h2>
+                        Grade-wise Employees
+                    </h2>
+
+                    <div id="gradeSummary"></div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <h2>
+                        Employment Type
+                    </h2>
+
+                    <div id="typeSummary"></div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-head">
+
+                    <h2>
+                        Upcoming Retirement
+                    </h2>
+
+                    <span class="muted">
+                        Next 12 months
+                    </span>
+
+                </div>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Post</th>
+                                <th>Posting</th>
+                                <th>DOB</th>
+                                <th>Retirement</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="retirementBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= EMPLOYEES ================= -->
+
+        <section
+            id="employees"
+            class="tab-panel"
+        >
+
+            <div class="panel">
+
+                <div class="panel-head">
+
+                    <h2>
+                        Employee Records
+                    </h2>
+
+                    <button
+                        id="addEmployeeBtn"
+                        class="primary editor-only"
+                    >
+                        + Add Employee
+                    </button>
+
+                </div>
+
+
+                <!-- FILTERS -->
+
+                <div class="filters">
+
+                    <input
+                        id="searchInput"
+                        placeholder="Search employee, ID, post or posting..."
+                    >
+
+                    <select id="gradeFilter">
+
+                        <option value="">
+                            All Grades
+                        </option>
+
+                        <option>
+                            Grade 1
+                        </option>
+
+                        <option>
+                            Grade 2
+                        </option>
+
+                        <option>
+                            Grade 3
+                        </option>
+
+                        <option>
+                            Grade 4
+                        </option>
+
+                    </select>
+
+
+                    <select id="typeFilter">
+
+                        <option value="">
+                            All Types
+                        </option>
+
+                        <option>
+                            Regular
+                        </option>
+
+                        <option>
+                            Contractual
+                        </option>
+
+                    </select>
+
+
+                    <select id="postingFilter">
+
+                        <option value="">
+                            All Posting Places
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        id="clearFilters"
+                        class="secondary"
+                    >
+                        Clear
+                    </button>
+
+                </div>
+
+
+                <!-- TABLE -->
+
+                <div class="table-wrap">
+
+                    <table id="employeeTable">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Employee ID</th>
+                                <th>Name</th>
+                                <th>Grade</th>
+                                <th>Type</th>
+                                <th>Post / Designation</th>
+                                <th>Place of Posting</th>
+                                <th>DOB</th>
+                                <th>Joining Date</th>
+                                <th>Retirement</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="employeeBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= REPORTS ================= -->
+
+        <section
+            id="reports"
+            class="tab-panel"
+        >
+
+            <div class="panel">
+
+                <h2>
+                    Reports & Export
+                </h2>
+
+                <p class="muted">
+
+                    Export the filtered employee list
+                    as CSV. The CSV file can be opened
+                    directly in Microsoft Excel.
+
+                </p>
+
+                <div class="report-actions">
+
+                    <button
+                        id="exportCsvBtn"
+                        class="primary"
+                    >
+                        📥 Export CSV
+                    </button>
+
+                    <button
+                        id="printBtn"
+                        class="secondary"
+                    >
+                        🖨️ Print Report
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= USER MANAGEMENT ================= -->
+
+        <section
+            id="users"
+            class="tab-panel admin-only"
+        >
+
+            <div class="panel">
+
+                <div class="panel-head">
+
+                    <h2>
+                        User Management
+                    </h2>
+
+                    <button
+                        id="addUserBtn"
+                        class="primary"
+                    >
+                        + Create Login
+                    </button>
+
+                </div>
+
+                <p class="muted">
+
+                    Administrator can create
+                    Data Entry and Viewer accounts.
+
+                </p>
+
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Name</th>
+                                <th>Email / Login ID</th>
+                                <th>Role</th>
+                                <th>Created</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="usersBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================= EMPLOYEE FORM ================= -->
+
+<dialog id="employeeDialog">
+
+    <form
+        method="dialog"
+        id="employeeForm"
+        class="modal"
+    >
+
+        <h2 id="employeeDialogTitle">
+            Add Employee
+        </h2>
+
+
+        <input
+            type="hidden"
+            id="employeeId"
+        >
+
+
+        <div class="form-grid">
+
+            <label>
+                Employee ID
+                <input id="fEmployeeCode" required>
+            </label>
+
+
+            <label>
+                Employee Name
+                <input id="fName" required>
+            </label>
+
+
+            <label>
+                Grade
+
+                <select id="fGrade" required>
+
+                    <option>
+                        Grade 1
+                    </option>
+
+                    <option>
+                        Grade 2
+                    </option>
+
+                    <option>
+                        Grade 3
+                    </option>
+
+                    <option>
+                        Grade 4
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+                Employment Type
+
+                <select id="fType" required>
+
+                    <option>
+                        Regular
+                    </option>
+
+                    <option>
+                        Contractual
+                    </option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+                Post / Designation
+                <input id="fPost" required>
+            </label>
+
+
+            <label>
+                Place of Posting
+                <input id="fPosting" required>
+            </label>
+
+
+            <label>
+                Date of Birth
+                <input
+                    id="fDob"
+                    type="date"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Date of Joining
+                <input
+                    id="fJoining"
+                    type="date"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Mobile
+                <input
+                    id="fMobile"
+                    inputmode="numeric"
+                >
+            </label>
+
+
+            <label>
+                Remarks
+
+                <textarea
+                    id="fRemarks"
+                ></textarea>
+
+            </label>
+
+        </div>
+
+
+        <div class="retirement-preview">
+
+            Calculated retirement date:
+
+            <strong id="retirementPreview">
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="secondary"
+                onclick="employeeDialog.close()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="primary"
+                value="save"
+            >
+                Save
+            </button>
+
+        </div>
+
+
+        <div
+            id="employeeError"
+            class="error"
+        ></div>
+
+    </form>
+
+</dialog>
+
+
+<!-- ================= CHANGE PASSWORD ================= -->
+
+<dialog id="passwordDialog">
+
+    <form
+        method="dialog"
+        id="passwordForm"
+        class="modal"
+    >
+
+        <h2>
+            Change Password
+        </h2>
+
+
+        <label>
+            New Password
+
+            <input
+                id="newPassword"
+                type="password"
+                minlength="8"
+                required
+            >
+
+        </label>
+
+
+        <label>
+            Confirm Password
+
+            <input
+                id="confirmPassword"
+                type="password"
+                minlength="8"
+                required
+            >
+
+        </label>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="secondary"
+                onclick="passwordDialog.close()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="primary"
+                value="save"
+            >
+                Update Password
+            </button>
+
+        </div>
+
+
+        <div
+            id="passwordError"
+            class="error"
+        ></div>
+
+    </form>
+
+</dialog>
+
+
+<!-- ================= CREATE USER ================= -->
+
+<dialog id="userDialog">
+
+    <form
+        method="dialog"
+        id="userForm"
+        class="modal"
+    >
+
+        <h2>
+            Create Login
+        </h2>
+
+
+        <label>
+            Full Name
+            <input id="uName" required>
+        </label>
+
+
+        <label>
+            Email / Login ID
+
+            <input
+                id="uEmail"
+                type="email"
+                required
+            >
+
+        </label>
+
+
+        <label>
+            Temporary Password
+
+            <input
+                id="uPassword"
+                type="password"
+                minlength="8"
+                required
+            >
+
+        </label>
+
+
+        <label>
+            Role
+
+            <select id="uRole">
+
+                <option value="data_entry">
+                    Data Entry
+                </option>
+
+                <option value="viewer">
+                    Viewer
+                </option>
+
+            </select>
+
+        </label>
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="secondary"
+                onclick="userDialog.close()"
+            >
+                Cancel
+            </button>
+
+            <button
+                class="primary"
+                value="save"
+            >
+                Create
+            </button>
+
+        </div>
+
+
+        <div
+            id="userError"
+            class="error"
+        ></div>
+
+    </form>
+
+</dialog>
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="config.js"></script>
+
+<script src="app.js"></script>
+
+</body>
+</html>
