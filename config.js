@@ -1,9 +1,6 @@
-window.APP_CONFIG = {
+const SUPABASE_URL = "https://tpzdgmbnyvkoqmoyupnb.supabase.co";
 
-    SUPABASE_URL:
-        "YOUR_SUPABASE_PROJECT_URL",
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_kPa8pfXOp-p1V6DpAFJLnw_zpmps8C8";
 
-    SUPABASE_ANON_KEY:
-        "YOUR_SUPABASE_ANON_KEY"
-
-};
+export { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY };
